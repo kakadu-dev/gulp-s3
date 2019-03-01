@@ -86,6 +86,19 @@ gulp.src('./dist/**').pipe(gzip())
     .pipe(s3(AWS, options));
 ```
 
+#### options.removeExtensions
+
+Type: `object`          
+Default: ``
+
+Replace file extension for files before upload to S3
+
+```javascript
+var options = { removeExtensions: {'html': ''} } // It will upload files without .html extension to S3
+gulp.src('./dist/**',)
+    .pipe(s3(AWS, options));
+```
+
 ## License
 
 [MIT License](http://en.wikipedia.org/wiki/MIT_License)

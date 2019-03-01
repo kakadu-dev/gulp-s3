@@ -10,7 +10,6 @@ module.exports = function (aws, options) {
   options = options || {};
 
   var client = knox.createClient(aws);
-  var waitTime = 0;
   var regexGzip = /\.([a-z0-9]{2,})\.gz$/i;
   var regexGeneral = /\.([a-z0-9]{2,})$/i;
 
@@ -19,7 +18,15 @@ module.exports = function (aws, options) {
 
     var uploadPath = file.path.replace(file.base, options.uploadPath || '');
     uploadPath = uploadPath.replace(new RegExp('\\\\', 'g'), '/');
-    
+
+    if (options.removeExtensions !== undefined) {
+        var re = /(?:\.([^.]+))?$/;
+        var ext = re.exec(uploadPath)[1];
+        if (ext.length && options.removeExtensions[ext] !== undefined) {
+            uploadPath = uploadPath.replace('.' + ext, options.removeExtensions[ext]);
+        }
+    }
+
     var headers = { 'x-amz-acl': 'public-read' };
 
     if (options.headers) {
